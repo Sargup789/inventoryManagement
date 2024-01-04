@@ -10,14 +10,10 @@ export interface ShopData {
     address: string;
 }
 
-interface ShopIndexProps {
-    shopData: ShopData[];
-}
-
-const Shop: React.FC<ShopIndexProps> = ({ shopData }) => {
+const Shop  = () => {
     return (
         <Layout>
-            <ShopIndex shopData={shopData} />
+            <ShopIndex  />
         </Layout>
     )
 }

@@ -11,14 +11,10 @@ export interface ProductData {
     available: string;
 }
 
-interface ShopIndexProps {
-    productData: ProductData[];
-}
-
-const Products: React.FC<ShopIndexProps> = ({ productData }) => {
+const Products = () => {
     return (
         <Layout>
-            <ProductIndex productData={productData}/>
+            <ProductIndex />
         </Layout>
     )
 }

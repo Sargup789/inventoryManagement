@@ -1,33 +1,54 @@
-import { Button, Typography } from "@mui/material";
-import { useState } from "react";
+import { Button, Typography, Box, Select, MenuItem } from "@mui/material";
+import { useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { v4 as uuidv4 } from 'uuid';
 import { ProductData } from "../../pages/products";
 import ProductTable from "./ProductTable";
 import AddProductDialog from "./AddProduct";
 
-type Props = {
-    productData: ProductData[];
-};
-
 const queryClient = new QueryClient();
 
-const ProductIndex = ({ productData }: Props) => {
+const ProductIndex = () => {
     const [addProductDialogOpen, setAddProductDialogOpen] = useState(false);
     const [productDialogData, setProductDialogData] = useState({});
-    
-    
- 
-    // const productsForAShop = productsData.filter((product: any) => product.shopId === shopId);
+    const [shopsData, setShopsData] = useState([])
+    const [productsData, setProductsData] = useState([])
+    const [selectedShop, setSelectedShop] = useState("");
+    const [isViewMode, setIsViewMode] = useState(false);
 
-    const editProduct = () => {
-        setProductDialogData({});
+    useEffect(() => {
+        const shopLocalStorageData = localStorage.getItem('shopsData');
+        console.log(shopLocalStorageData, 'shopLocalStorageData')
+        const shopsData = JSON.parse(shopLocalStorageData || '[]');
+        setShopsData(shopsData)
+
+    }, [])
+
+    useEffect(() => {
+        const productLocalStorageData = localStorage.getItem('productsData');
+        console.log(productLocalStorageData, 'productLocalStorageData')
+        const productsData = JSON.parse(productLocalStorageData || '[]');
+        const productsForAShop = productsData.filter((product: any) => product.shopId === selectedShop);
+        setProductsData(productsForAShop)
+    }, [
+        selectedShop
+    ])
+
+    const editProduct = (row: ProductData) => {
+        setProductDialogData(row);
         setAddProductDialogOpen(true);
     };
+
+    const viewProduct = (row: ProductData) => {
+        setProductDialogData(row);
+        setAddProductDialogOpen(true);
+        setIsViewMode(true);
+    }
 
     const handleClose = () => {
         setAddProductDialogOpen(false);
         setProductDialogData({});
+        setIsViewMode(false);
     };
 
     const onSubmit = async (data: any) => {
@@ -57,7 +78,7 @@ const ProductIndex = ({ productData }: Props) => {
         }
         //update productsData from productsForAShop
         const finalproducts = productsData.filter((product: any) => product.shopId !== data.shopId).concat(productsForAShop);
-        console.log(finalproducts,productsData.filter((product: any) => product.shopId !== data.shopId),productsData,productsForAShop,'final data')
+        console.log(finalproducts, productsData.filter((product: any) => product.shopId !== data.shopId), productsData, productsForAShop, 'final data')
         localStorage.setItem('productsData', JSON.stringify(finalproducts));
         handleClose();
     }
@@ -69,28 +90,47 @@ const ProductIndex = ({ productData }: Props) => {
                     <div style={{ marginLeft: '10px' }}>
                     </div>
                     <Typography align='left' style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <Button
-                            style={{
-                                borderRadius: 15,
-                                backgroundColor: "#127688",
-                                // padding: "18px 36px",
-                                fontSize: "13px"
-                            }}
-                            variant="contained"
-                            onClick={() => setAddProductDialogOpen(true)}
-                        >
-                            Add Product
-                        </Button>
+                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <Select
+                                value={selectedShop}
+                                onChange={(e: any) => setSelectedShop(e.target.value)}
+                                label="Select Shop"
+                                size='small'
+                                placeholder='Select Shop'
+                                sx={{ minWidth: 200, marginTop: '10px' }}
+                            >
+                                <MenuItem value="">Select Shop</MenuItem>
+                                {shopsData?.map((option: any) => (
+                                    <MenuItem key={option.key} value={option.id}>
+                                        {option.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                            <Button
+                                style={{
+                                    borderRadius: 15,
+                                    backgroundColor: "#127688",
+                                    // padding: "18px 36px",
+                                    fontSize: "13px"
+                                }}
+                                variant="contained"
+                                onClick={() => setAddProductDialogOpen(true)}
+                            >
+                                Add Product
+                            </Button>
+                        </Box>
                     </Typography>
                 </Typography>
                 <br />
                 <ProductTable
-                    productData={productData}
+                    productData={productsData}
                     // deleteShop={deleteShop}
+                    viewProduct={viewProduct}
                     editProduct={editProduct}
                 />
                 {addProductDialogOpen && <AddProductDialog
                     open={addProductDialogOpen}
+                    isViewMode={isViewMode}
                     productDialogData={productDialogData}
                     handleClose={handleClose}
                     onSubmit={onSubmit}

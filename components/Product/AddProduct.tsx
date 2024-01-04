@@ -18,6 +18,7 @@ import { ProductData } from "../../pages/products";
 interface ProductDialogProps {
     open: boolean;
     handleClose: () => void;
+    isViewMode: boolean;
     productDialogData: ProductData | {};
     onSubmit: (data: ProductData) => void;
 }
@@ -25,6 +26,7 @@ interface ProductDialogProps {
 const AddProductDialog: React.FC<ProductDialogProps> = ({
     open,
     handleClose,
+    isViewMode,
     productDialogData,
     onSubmit, }) => {
     const isEditMode = Object.keys(productDialogData).length > 0;
@@ -48,7 +50,10 @@ const AddProductDialog: React.FC<ProductDialogProps> = ({
                         alignItems: "center",
                     }}
                 >
-                    {isEditMode ? "Edit" : "Add"} Product
+                    {isViewMode ? "View"
+                        : isEditMode
+                            ? "Edit"
+                            : "Add"} Product
                 </Box>
                 <IconButton
                     children={<HighlightOff />}
@@ -155,7 +160,7 @@ const AddProductDialog: React.FC<ProductDialogProps> = ({
                                 </Field>
                             </Box>
                             <DialogActions>
-                                <Button
+                                {!isViewMode && <Button
                                     style={{
                                         borderRadius: 15,
                                         backgroundColor: "#127688",
@@ -165,7 +170,7 @@ const AddProductDialog: React.FC<ProductDialogProps> = ({
                                     type="submit"
                                 >
                                     Save
-                                </Button>
+                                </Button>}
                             </DialogActions>
                         </form>
                     )}

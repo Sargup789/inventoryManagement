@@ -1,7 +1,6 @@
 import CabinIcon from '@mui/icons-material/Cabin';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import MenuIcon from '@mui/icons-material/Menu';
-import PeopleIcon from '@mui/icons-material/People';
 import { Box, CssBaseline, Divider, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, styled, Toolbar, Typography } from '@mui/material';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import { useRouter } from 'next/router';
@@ -14,7 +13,6 @@ const drawerItems = [
     { name: 'Dashboard', path: '/', icon: <DashboardIcon /> },
     { name: 'Shop', path: '/shop', icon: <CabinIcon /> },
     { name: 'Products', path: '/products', icon: <CategoryIcon /> },
-    { name: 'Users', path: '/user', icon: <PeopleIcon /> },
 ]
 
 const drawerWidth = 240;

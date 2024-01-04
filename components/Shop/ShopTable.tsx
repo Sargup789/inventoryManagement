@@ -1,18 +1,19 @@
 import { ShopData } from '../../pages/shop';
-import { DeleteOutline, EditOutlined, RemoveRedEyeOutlined } from '@mui/icons-material';
+import { EditOutlined, RemoveRedEyeOutlined } from '@mui/icons-material';
 import { IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from '@mui/material';
 
 interface Props {
     shopData: ShopData[];
     // deleteShop: (id: string) => void;
     editShop: (data: ShopData) => void;
+    viewShop: (data: ShopData) => void;
 }
 
 export default function Shop({
-    shopData, editShop,
+    shopData, editShop, viewShop
 }: Props) {
 
-    console.log(shopData,'shopdata')
+    console.log(shopData, 'shopdata')
 
     if (!shopData) return (<div></div>)
 
@@ -43,7 +44,7 @@ export default function Shop({
                                         <Tooltip title="View" followCursor>
                                             <IconButton
                                                 size="small"
-                                                onClick={() => { }}
+                                                onClick={() => viewShop(row as ShopData)}
                                                 children={<RemoveRedEyeOutlined fontSize="small" />}
                                             />
                                         </Tooltip>
@@ -52,13 +53,6 @@ export default function Shop({
                                                 size="small"
                                                 onClick={() => editShop(row as ShopData)}
                                                 children={<EditOutlined fontSize="small" />}
-                                            />
-                                        </Tooltip>
-                                        <Tooltip title="Delete" followCursor>
-                                            <IconButton
-                                                size="small"
-                                                onClick={() => { }}
-                                                children={<DeleteOutline fontSize="small" />}
                                             />
                                         </Tooltip>
                                     </TableCell>

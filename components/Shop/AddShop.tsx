@@ -17,6 +17,7 @@ interface ShopDialogProps {
     open: boolean;
     handleClose: () => void;
     shopDialogData: ShopData | {};
+    isViewMode: boolean;
     onSubmit: (data: ShopData) => void;
 }
 
@@ -24,6 +25,7 @@ const AddShopDialog: React.FC<ShopDialogProps> = ({
     open,
     handleClose,
     shopDialogData,
+    isViewMode,
     onSubmit, }) => {
     const isEditMode = Object.keys(shopDialogData).length > 0;
 
@@ -42,7 +44,10 @@ const AddShopDialog: React.FC<ShopDialogProps> = ({
                         alignItems: "center",
                     }}
                 >
-                    {isEditMode ? "Edit" : "Add"} Shop
+                    {isViewMode ? "View"
+                        : isEditMode
+                            ? "Edit"
+                            : "Add"} Shop
                 </Box>
                 <IconButton
                     children={<HighlightOff />}
@@ -120,22 +125,22 @@ const AddShopDialog: React.FC<ShopDialogProps> = ({
                                         </Box>
                                     )}
                                 </Field>
-                                    <Field name="longitude">
-                                        {({ input }) => (
-                                            <Box>
-                                                <Typography className="label">Longitude</Typography>
-                                                <TextField
-                                                    {...input}
-                                                    fullWidth
-                                                    size="small"
-                                                    placeholder="Enter longitude"
-                                                 />
-                                            </Box>
-                                        )}
-                                    </Field>
+                                <Field name="longitude">
+                                    {({ input }) => (
+                                        <Box>
+                                            <Typography className="label">Longitude</Typography>
+                                            <TextField
+                                                {...input}
+                                                fullWidth
+                                                size="small"
+                                                placeholder="Enter longitude"
+                                            />
+                                        </Box>
+                                    )}
+                                </Field>
                             </Box>
                             <DialogActions>
-                                <Button
+                                {!isViewMode && <Button
                                     style={{
                                         borderRadius: 15,
                                         backgroundColor: "#127688",
@@ -145,7 +150,7 @@ const AddShopDialog: React.FC<ShopDialogProps> = ({
                                     type="submit"
                                 >
                                     Save
-                                </Button>
+                                </Button>}
                             </DialogActions>
                         </form>
                     )}

@@ -6,28 +6,33 @@ import { v4 as uuidv4 } from 'uuid';
 import ShopTable from "./ShopTable";
 import { ShopData } from "../../pages/shop";
 
-type Props = {
-    shopData: ShopData[];
-};
 
 const queryClient = new QueryClient();
 
-const ShopIndex = ({ shopData }: Props) => {
+const ShopIndex = () => {
     const [addShopDialogOpen, setAddShopDialogOpen] = useState(false);
     const [shopDialogData, setShopDialogData] = useState({});
+    const [isViewMode, setIsViewMode] = useState(false);
 
     const shopLocalStorageData = localStorage.getItem('shopsData');
-        console.log(shopLocalStorageData, 'shopLocalStorageData')
-        const shopsData = JSON.parse(shopLocalStorageData || '[]');
+    console.log(shopLocalStorageData, 'shopLocalStorageData')
+    const shopsData = JSON.parse(shopLocalStorageData || '[]');
 
-    const editShop = () => {
-        setShopDialogData({});
+    const editShop = (row: ShopData) => {
+        setShopDialogData(row);
         setAddShopDialogOpen(true);
     };
+
+    const viewShop = (row: ShopData) => {
+        setShopDialogData(row);
+        setAddShopDialogOpen(true);
+        setIsViewMode(true);
+    }
 
     const handleClose = () => {
         setAddShopDialogOpen(false);
         setShopDialogData({});
+        setIsViewMode(false);
     };
 
     const onSubmit = async (data: any) => {
@@ -82,9 +87,11 @@ const ShopIndex = ({ shopData }: Props) => {
                     shopData={shopsData}
                     // deleteShop={deleteShop}
                     editShop={editShop}
+                    viewShop={viewShop}
                 />
                 <AddShopDialog
                     open={addShopDialogOpen}
+                    isViewMode={isViewMode}
                     shopDialogData={shopDialogData}
                     handleClose={handleClose}
                     onSubmit={onSubmit}
