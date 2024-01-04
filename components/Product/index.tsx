@@ -1,0 +1,105 @@
+import { Button, Typography } from "@mui/material";
+import { useState } from "react";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { v4 as uuidv4 } from 'uuid';
+import { ProductData } from "../../pages/products";
+import ProductTable from "./ProductTable";
+import AddProductDialog from "./AddProduct";
+
+type Props = {
+    productData: ProductData[];
+};
+
+const queryClient = new QueryClient();
+
+const ProductIndex = ({ productData }: Props) => {
+    const [addProductDialogOpen, setAddProductDialogOpen] = useState(false);
+    const [productDialogData, setProductDialogData] = useState({});
+    
+    
+ 
+    // const productsForAShop = productsData.filter((product: any) => product.shopId === shopId);
+
+    const editProduct = () => {
+        setProductDialogData({});
+        setAddProductDialogOpen(true);
+    };
+
+    const handleClose = () => {
+        setAddProductDialogOpen(false);
+        setProductDialogData({});
+    };
+
+    const onSubmit = async (data: any) => {
+        const productLocalStorageData = localStorage.getItem('productsData');
+        console.log(productLocalStorageData, 'productLocalStorageData')
+        const productsData = JSON.parse(productLocalStorageData || '[]');
+        console.log(productsData, 'shopsData')
+        const productsForAShop = productsData.filter((product: any) => product.shopId === data.shopId);
+        if (Object.keys(productDialogData).length > 0) {
+            const { id, ...rest } = data;
+            try {
+                const productIndex = productsForAShop.findIndex((product: any) => product.id === id);
+                productsForAShop[productIndex] = rest;
+                console.log(productsForAShop, 'updated productsForAShop')
+            } catch (error) {
+                console.error(error);
+            }
+        } else {
+            try {
+                const newProductId = uuidv4();
+                data.id = newProductId;
+                productsForAShop.push(data);
+                console.log(productsForAShop, 'updated shopsData')
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        //update productsData from productsForAShop
+        const finalproducts = productsData.filter((product: any) => product.shopId !== data.shopId).concat(productsForAShop);
+        console.log(finalproducts,productsData.filter((product: any) => product.shopId !== data.shopId),productsData,productsForAShop,'final data')
+        localStorage.setItem('productsData', JSON.stringify(finalproducts));
+        handleClose();
+    }
+
+    return (
+        <QueryClientProvider client={queryClient}>
+            <div className="m-6">
+                <Typography align="right" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ marginLeft: '10px' }}>
+                    </div>
+                    <Typography align='left' style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <Button
+                            style={{
+                                borderRadius: 15,
+                                backgroundColor: "#127688",
+                                // padding: "18px 36px",
+                                fontSize: "13px"
+                            }}
+                            variant="contained"
+                            onClick={() => setAddProductDialogOpen(true)}
+                        >
+                            Add Product
+                        </Button>
+                    </Typography>
+                </Typography>
+                <br />
+                <ProductTable
+                    productData={productData}
+                    // deleteShop={deleteShop}
+                    editProduct={editProduct}
+                />
+                {addProductDialogOpen && <AddProductDialog
+                    open={addProductDialogOpen}
+                    productDialogData={productDialogData}
+                    handleClose={handleClose}
+                    onSubmit={onSubmit}
+                />}
+            </div>
+        </QueryClientProvider>
+    );
+};
+
+export default ProductIndex;
+
+
