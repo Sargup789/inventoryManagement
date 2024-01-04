@@ -1,10 +1,11 @@
-import { Button, Typography, Box, Select, MenuItem } from "@mui/material";
+import { Button, Typography, Box, Select, MenuItem, IconButton } from "@mui/material";
 import { useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { v4 as uuidv4 } from 'uuid';
 import { ProductData } from "../../pages/products";
 import ProductTable from "./ProductTable";
 import AddProductDialog from "./AddProduct";
+import ClearIcon from '@mui/icons-material/Clear';
 
 const queryClient = new QueryClient();
 
@@ -86,40 +87,45 @@ const ProductIndex = () => {
     return (
         <QueryClientProvider client={queryClient}>
             <div className="m-6">
-                <Typography align="right" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <div style={{ marginLeft: '10px' }}>
-                    </div>
-                    <Typography align='left' style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                            <Select
-                                value={selectedShop}
-                                onChange={(e: any) => setSelectedShop(e.target.value)}
-                                label="Select Shop"
-                                size='small'
-                                placeholder='Select Shop'
-                                sx={{ minWidth: 200, marginTop: '10px' }}
-                            >
-                                <MenuItem value="">Select Shop</MenuItem>
-                                {shopsData?.map((option: any) => (
-                                    <MenuItem key={option.key} value={option.id}>
-                                        {option.name}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                            <Button
-                                style={{
-                                    borderRadius: 15,
-                                    backgroundColor: "#127688",
-                                    // padding: "18px 36px",
-                                    fontSize: "13px"
-                                }}
-                                variant="contained"
-                                onClick={() => setAddProductDialogOpen(true)}
-                            >
-                                Add Product
-                            </Button>
-                        </Box>
-                    </Typography>
+                <Typography align='left' style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                        <Select
+                            value={selectedShop}
+                            onChange={(e: any) => setSelectedShop(e.target.value)}
+                            label="Select Shop"
+                            size='small'
+                            placeholder='Select Shop'
+                            inputProps={{
+                                endAdornment: (
+                                    <>
+                                        <IconButton onClick={() => { setSelectedShop('') }}><ClearIcon /></IconButton>
+                                    </>
+                                ),
+                                autoComplete: 'off',
+                                autoFocus: true,
+                            }}
+                            sx={{ minWidth: 200, marginTop: '10px' }}
+                        >
+                            <MenuItem value="">Select Shop</MenuItem>
+                            {shopsData?.map((option: any) => (
+                                <MenuItem key={option.key} value={option.id}>
+                                    {option.name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                        <Button
+                            style={{
+                                borderRadius: 15,
+                                backgroundColor: "#127688",
+                                // padding: "18px 36px",
+                                fontSize: "13px"
+                            }}
+                            variant="contained"
+                            onClick={() => setAddProductDialogOpen(true)}
+                        >
+                            Add Product
+                        </Button>
+                    </Box>
                 </Typography>
                 <br />
                 <ProductTable

@@ -7,7 +7,10 @@ const DashboardIndex = () => {
     const router = useRouter()
     return (
         <QueryClientProvider client={queryClient}>
-            <div className="m-6">
+            <div className="m-6" style={{ textAlign: 'center' }}>
+                <span style={{ fontWeight: 'bold', color: '#127688', fontSize: '500%' }}>
+                    Assignment
+                </span>
             </div>
         </QueryClientProvider>
     )
