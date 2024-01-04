@@ -16,8 +16,8 @@ interface UserIndexProps {
 const Shop: React.FC<UserIndexProps> = ({ userData }) => {
     return (
         <Layout>
-            <UserIndex userData={userData}/>
-         </Layout>
+            <UserIndex userData={userData} />
+        </Layout>
     )
 }
 
